@@ -15,8 +15,6 @@ import (
 type Router struct {
 	cfg *config.AppConfig
 	// middleware
-	//OTELTracer *custommiddleware.OTELTracer
-	//OTELMetrics    *custommiddleware.OTELMetrics
 	DDTracer       *custommiddleware.DDTracer
 	DDMetrics      *custommiddleware.DDMetrics
 	errorHandler   *custommiddleware.ErrorHandling
@@ -30,11 +28,8 @@ type Router struct {
 
 func NewRouter(
 	cfg *config.AppConfig,
-	//OTELTracer *custommiddleware.OTELTracer,
-	//OTELMetrics *custommiddleware.OTELMetrics,
 	DDTracer *custommiddleware.DDTracer,
 	DDMetrics *custommiddleware.DDMetrics,
-
 	errorHandler *custommiddleware.ErrorHandling,
 	Timeout *custommiddleware.Timeout,
 	authentication *custommiddleware.Authentication,
@@ -43,12 +38,9 @@ func NewRouter(
 	sampleRouter *v1.SampleRouter,
 ) *Router {
 	return &Router{
-		cfg: cfg,
-		//OTELTracer: OTELTracer,
-		//OTELMetrics:    OTELMetrics,
-		DDTracer:  DDTracer,
-		DDMetrics: DDMetrics,
-
+		cfg:               cfg,
+		DDTracer:          DDTracer,
+		DDMetrics:         DDMetrics,
 		errorHandler:      errorHandler,
 		timeout:           Timeout,
 		authentication:    authentication,
@@ -71,8 +63,6 @@ func (ro *Router) setupGlobalMiddleware(r *chi.Mux) { // case: datadog SDK
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Recoverer)
 	r.Use(custommiddleware.Context())
-	//r.Use(custommiddleware.OTELTracer()) // fixme choose one of OTELTracer or DDTracer
-	//r.Use(custommiddleware.OTELMetrics(appMetrics)) // case: open telemetry
 	r.Use(ro.DDTracer.Handle())
 	r.Use(ro.DDMetrics.Handle())
 

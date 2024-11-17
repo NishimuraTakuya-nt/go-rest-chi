@@ -29,11 +29,6 @@ func NewHealthcheckHandler(logger logger.Logger, JSONWriter *presenter.JSONWrite
 // @Failure 500 {object} response.ErrorResponse
 // @Router /healthcheck [get]
 func (h *HealthcheckHandler) Get(w http.ResponseWriter, r *http.Request) {
-	//ctx := r.Context()
-	//tracer := otel.Tracer("health-check-handler")
-	//_, span := tracer.Start(ctx, "health-check")
-	//defer span.End()
-
 	ctx, span := datadog.StartOperation(r.Context())
 	defer span.Finish()
 	span.SetTag("custom.tag", "test-value")

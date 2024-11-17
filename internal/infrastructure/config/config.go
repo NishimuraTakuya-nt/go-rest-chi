@@ -40,11 +40,9 @@ func (l *Loader) setDefaults() {
 	l.v.SetDefault("allowed_origins", []string{"*"})
 	l.v.SetDefault("jwt_secret_key", "jwt-secret")
 	l.v.SetDefault("request_timeout", 180*time.Second)
-	//v.SetDefault("request_timeout", 1*time.Second) // fixme
 
 	l.v.SetDefault("dd_enabled", true)
 	l.v.SetDefault("dd_agent_host", "localhost")
-	//v.SetDefault("dd_agent_port", "4317") // case: open telemetry grpc
 	l.v.SetDefault("dd_agent_trace_port", "8126") // case: datadog SDK
 	l.v.SetDefault("dd_agent_metrics_port", "8125")
 	l.v.SetDefault("dd_sampling_rate", 1.0)

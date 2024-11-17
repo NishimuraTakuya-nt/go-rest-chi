@@ -27,7 +27,6 @@ func InitializeRouter(cfg *config.AppConfig, logger logger.Logger, metricsManage
 		usecases.Set,
 		handlers.Set,
 		v1.Set,
-		//telemetry.Set,
 		routes.Set,
 	)
 	return nil, nil

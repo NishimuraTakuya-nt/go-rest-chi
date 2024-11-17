@@ -71,12 +71,14 @@ base project for go rest api with chi
 └── tools/                   # 開発ツール関連
 ```
 
-## node
+## Setup
+
+### node
 ```shell
 npm install
 ```
 
-## direnv
+### direnv
 1. direnv をインストール
 ```bash
 brew install direnv

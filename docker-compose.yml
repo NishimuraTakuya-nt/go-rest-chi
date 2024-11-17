@@ -10,9 +10,8 @@ services:
       - ALLOWED_ORIGINS=*,http://localhost:3000
       - JWT_SECRET_KEY=hoge
       - DD_AGENT_HOST=datadog-agent
-      - DD_AGENT_PORT=4317
-      - DD_DOGSTATSD_HOST=datadog-agent    # DogStatsD接続先
-      - DD_DOGSTATSD_PORT=8125             # DogStatsD接続ポート
+      - DD_TRACE_AGENT_PORT=8126
+      - DD_DOGSTATSD_PORT=8125
     volumes:
       - go-modules:/go/pkg/mod
     depends_on:
@@ -21,7 +20,7 @@ services:
   datadog-agent:
     image: datadog/agent:latest
     ports:
-      - "8126:8126"  # APM用ポート
+      - "8126:8126"
       - "8125:8125/udp"
     environment:
       - DD_API_KEY=${DD_API_KEY}
