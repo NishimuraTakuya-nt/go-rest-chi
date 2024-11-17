@@ -1,0 +1,478 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "contact": {},
+    "description": "This is a sample server for a Go REST API using clean architecture.",
+    "title": "Go REST Clean API with Chi",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.LoginResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "tags": [
+          "authentication"
+        ],
+        "description": "Authenticate a user and return a JWT token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.LoginRequest"
+              }
+            }
+          },
+          "description": "Login credentials",
+          "required": true
+        },
+        "summary": "User login"
+      }
+    },
+    "/healthcheck": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "tags": [
+          "healthcheck"
+        ],
+        "description": "Get the health status of the API",
+        "summary": "Health check endpoint"
+      }
+    },
+    "/samples": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Offset for pagination",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Limit for pagination",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 100,
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ListSampleResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": [
+          "samples"
+        ],
+        "description": "Get a list of samples with pagination",
+        "summary": "List samples"
+      },
+      "post": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.SampleResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": [
+          "samples"
+        ],
+        "description": "Create a new sample",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/request.SampleRequest"
+              }
+            }
+          },
+          "description": "Sample information",
+          "required": true
+        },
+        "summary": "Sample create"
+      }
+    },
+    "/samples/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Sample ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.SampleResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response.ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": [
+          "samples"
+        ],
+        "description": "Get details of a sample",
+        "summary": "Get a sample by ID"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "request.LoginRequest": {
+        "description": "LoginRequest is a struct that represents the request of login",
+        "properties": {
+          "password": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "request.SampleDetail": {
+        "description": "Sample detail information",
+        "properties": {
+          "id": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "name": {
+            "maxLength": 50,
+            "minLength": 2,
+            "type": "string"
+          },
+          "price": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object"
+      },
+      "request.SampleRequest": {
+        "description": "Sample information",
+        "properties": {
+          "array_val": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "email": {
+            "example": "test@example.com",
+            "type": "string"
+          },
+          "id": {
+            "description": "refs: https://github.com/swaggo/swag#example-value-of-struct",
+            "type": "string"
+          },
+          "int_val": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "sample_detail_not_required": {
+            "$ref": "#/components/schemas/request.SampleDetail"
+          },
+          "sample_detail_required": {
+            "$ref": "#/components/schemas/request.SampleDetail"
+          },
+          "string_val": {
+            "maxLength": 50,
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "required": [
+          "int_val",
+          "sample_detail_required",
+          "string_val"
+        ],
+        "type": "object"
+      },
+      "response.ErrorResponse": {
+        "description": "Error response structure",
+        "properties": {
+          "details": {},
+          "message": {
+            "type": "string"
+          },
+          "request_id": {
+            "type": "string"
+          },
+          "status_code": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.ListSampleResponse": {
+        "description": "Sample list information",
+        "properties": {
+          "limit": {
+            "type": "integer"
+          },
+          "offset": {
+            "type": "integer"
+          },
+          "samples": {
+            "items": {
+              "$ref": "#/components/schemas/response.SampleResponse"
+            },
+            "type": "array"
+          },
+          "total_count": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "response.LoginResponse": {
+        "description": "LoginResponse is a struct that represents the response of login",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "response.SampleResponse": {
+        "description": "Sample information",
+        "properties": {
+          "array_val": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "int_val": {
+            "type": "integer"
+          },
+          "string_val": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "in": "header",
+        "name": "Authorization",
+        "type": "apiKey"
+      }
+    }
+  }
+}
