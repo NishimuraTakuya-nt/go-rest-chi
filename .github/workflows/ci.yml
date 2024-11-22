@@ -130,4 +130,4 @@ jobs:
 #
 #      - name: Wait for ECS service to stabilize
 #        run: |
-#          aws ecs wait services-stable --cluster your-cluster-name --services your-service-name
+#          aws ecs wait service-stable --cluster your-cluster-name --service your-service-name

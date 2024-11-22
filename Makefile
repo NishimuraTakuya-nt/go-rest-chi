@@ -1,4 +1,4 @@
-.PHONY: lint lint-fix test down build up clean wire swagger generate-mocks fetch-graphql-schema help
+.PHONY: lint lint-fix test down build up clean wire swagger generate-mocks fetch-graphql-schema clean-graphql-schema generate-graphql help
 
 NAME := go-rest-chi
 DC := docker compose
@@ -40,8 +40,8 @@ swagger: ## Generate swagger
 	swag init -g cmd/api/main.go -o docs/swagger
 	npm run convert-openapi
 
-generate-mocks:
-	go generate ./internal/mocks/...
+generate-mock:
+	go generate ./internal/mock/...
 
 fetch-graphql-schema:
 	GRAPHQL_ENDPOINT=$(GRAPHQL_ENDPOINT) npm run fetch-schema
@@ -49,7 +49,7 @@ fetch-graphql-schema:
 clean-graphql-schema:
 	npm run fetch-schema:clean
 
-generate-graphql-schema:
+generate-graphql:
 	go run github.com/Khan/genqlient
 
 

@@ -51,23 +51,21 @@ base project for go rest api with chi
 ├── docs/
 │   └── swagger/             # API仕様書（OpenAPI/Swagger）
 ├── internal/
-│   ├── adapters/            # 外部システムとのインターフェース層
+│   ├── adapter/            # 外部システムとのインターフェース層
 │   │   ├── primary/           # 外部からのリクエストを受け付ける側のアダプター
 │   │   └── secondary/         # 外部システムへのアクセスを行う側のアダプター
-│   ├── core/                # ビジネスロジックの中心
+│   ├── domain/                # ビジネスロジックの中心
 │   │   ├── common/            # 共通ユーティリティ
-│   │   ├── domain/            # ドメインモデルとビジネスルール
-│   │   ├── services/          # サービス
-│   │   └── usecases/          # アプリケーションのユースケース
+│   │   ├── service/          # サービス
+│   │   └── usecase/          # アプリケーションのユースケース
 │   ├── infrastructure/      # 横断的・技術的な実装詳細
-│   │   ├── apperrors/         # カスタムエラー
+│   │   ├── apperror/         # カスタムエラー
 │   │   ├── config/            # 設定管理
 │   │   ├── logger/            # ログ機能
 │   │   ├── telemetry/         # 監視・計測（メトリクス、トレーシング）
 │   │   └── validator/         # バリデーション
-│   ├── mocks/               # モックオブジェクト
-│   └── utils/               # 汎用ユーティリティ関数
-├── scripts/                 # ビルド、デプロイ、その他のスクリプト
+│   └── mock/               # モックオブジェクト
+├── script/                 # ビルド、デプロイ、その他のスクリプト
 └── tools/                   # 開発ツール関連
 ```
 

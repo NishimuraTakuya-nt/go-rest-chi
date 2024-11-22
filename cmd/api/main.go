@@ -11,10 +11,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/NishimuraTakuya-nt/go-rest-chi/config"
 	_ "github.com/NishimuraTakuya-nt/go-rest-chi/docs/swagger"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/infrastructure/config"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/infrastructure/logger"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/infrastructure/telemetry/datadog"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/common/logger"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/common/telemetry/datadog"
 )
 
 // @title Go REST Clean API with Chi

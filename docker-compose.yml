@@ -9,6 +9,7 @@ services:
       - SERVER_ADDRESS=:8081
       - ALLOWED_ORIGINS=*,http://localhost:3000
       - JWT_SECRET_KEY=hoge
+      - PIYO_GRAPHQL_ENDPOINT=http://host.docker.internal:8082/query
       - DD_AGENT_HOST=datadog-agent
       - DD_TRACE_AGENT_PORT=8126
       - DD_DOGSTATSD_PORT=8125

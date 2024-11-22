@@ -1,0 +1,65 @@
+package datadog
+
+import (
+	"fmt"
+
+	"github.com/NishimuraTakuya-nt/go-rest-chi/config"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/common/logger"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
+)
+
+type Tracer struct {
+	logger logger.Logger
+	cfg    *config.AppConfig
+}
+
+func NewTracer(cfg *config.AppConfig, logger logger.Logger) *Tracer {
+	return &Tracer{
+		logger: logger,
+		cfg:    cfg,
+	}
+}
+
+func (t *Tracer) Start() error {
+	if !t.cfg.DDEnabled {
+		t.logger.Info("Datadog tracing is disabled")
+		return nil
+	}
+
+	t.logger.Info("Initializing Datadog tracer")
+
+	tracer.Start(
+		tracer.WithService("go-rest-chi"),
+		tracer.WithEnv(t.cfg.Env),
+		tracer.WithServiceVersion(t.cfg.Version),
+		tracer.WithAgentAddr(fmt.Sprintf("%s:%s",
+			t.cfg.DDAgentHost,
+			t.cfg.DDAgentTracePort,
+		)),
+		// サンプリングレートの設定
+		tracer.WithSamplingRules([]tracer.SamplingRule{
+			{
+				Rate: t.cfg.DDSamplingRate,
+			},
+		}),
+		// デバッグモードの設定
+		tracer.WithDebugMode(t.cfg.LogLevel == "DEBUG"),
+		// プロファイラーの設定
+		tracer.WithRuntimeMetrics(),
+	)
+
+	t.logger.Info("Datadog tracer initialized successfully",
+		"agent_host", t.cfg.DDAgentHost,
+		"agent_port", t.cfg.DDAgentTracePort,
+		"env", t.cfg.Env,
+	)
+	return nil
+}
+
+func (t *Tracer) Stop() {
+	if t.cfg.DDEnabled {
+		t.logger.Info("Stopping tracer")
+		tracer.Stop()
+		t.logger.Info("Tracer shutdown completed")
+	}
+}

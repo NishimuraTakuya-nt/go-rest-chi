@@ -7,17 +7,17 @@
 package main
 
 import (
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapters/primary/http/custommiddleware"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapters/primary/http/handlers"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapters/primary/http/presenter"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapters/primary/http/routes"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapters/primary/http/routes/v1"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapters/secondary/piyographql"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/core/services"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/core/usecases"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/infrastructure/config"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/infrastructure/logger"
-	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/infrastructure/telemetry/datadog"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/config"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapter/primary/http/custommiddleware"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapter/primary/http/handler"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapter/primary/http/presenter"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapter/primary/http/route"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapter/primary/http/route/v1"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapter/secondary/piyographql"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/common/logger"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/common/telemetry/datadog"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/domain/service"
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/domain/usecase"
 )
 
 import (
@@ -26,24 +26,24 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeRouter(cfg *config.AppConfig, logger2 logger.Logger, metricsManager *datadog.MetricsManager) (*routes.Router, error) {
+func InitializeRouter(cfg *config.AppConfig, logger2 logger.Logger, metricsManager *datadog.MetricsManager) (*route.Router, error) {
 	ddTracer := custommiddleware.NewDDTracer(logger2)
 	ddMetrics := custommiddleware.NewMetrics(logger2, metricsManager)
 	jsonWriter := presenter.NewJSONWriter(logger2)
 	errorHandling := custommiddleware.NewErrorHandling(logger2, jsonWriter)
 	timeout := custommiddleware.NewTimeout(logger2, cfg)
-	tokenService := services.NewTokenService(cfg)
-	authUsecase := usecases.NewAuthUsecase(tokenService)
+	tokenService := service.NewTokenService(cfg)
+	authUsecase := usecase.NewAuthUsecase(tokenService)
 	authentication := custommiddleware.NewAuthentication(logger2, jsonWriter, authUsecase)
-	healthcheckHandler := handlers.NewHealthcheckHandler(logger2, jsonWriter)
+	healthcheckHandler := handler.NewHealthcheckHandler(logger2, jsonWriter)
 	healthcheckRouter := v1.NewHealthcheckRouter(healthcheckHandler)
-	authHandler := handlers.NewAuthHandler(logger2, jsonWriter, authUsecase)
+	authHandler := handler.NewAuthHandler(logger2, jsonWriter, authUsecase)
 	authRouter := v1.NewAuthRouter(authHandler)
 	baseClient := piyographql.NewBaseClient(logger2, cfg)
 	sampleClient := piyographql.NewSampleClient(logger2, baseClient)
-	sampleUsecase := usecases.NewSampleUsecase(logger2, sampleClient)
-	sampleHandler := handlers.NewSampleHandler(logger2, jsonWriter, sampleUsecase)
+	sampleUsecase := usecase.NewSampleUsecase(logger2, sampleClient)
+	sampleHandler := handler.NewSampleHandler(logger2, jsonWriter, sampleUsecase)
 	sampleRouter := v1.NewSampleRouter(sampleHandler)
-	router := routes.NewRouter(cfg, ddTracer, ddMetrics, errorHandling, timeout, authentication, healthcheckRouter, authRouter, sampleRouter)
+	router := route.NewRouter(cfg, ddTracer, ddMetrics, errorHandling, timeout, authentication, healthcheckRouter, authRouter, sampleRouter)
 	return router, nil
 }

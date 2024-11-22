@@ -1,7 +1,7 @@
-schema: internal/adapters/secondary/piyographql/schema/schema.graphql
+schema: internal/adapter/secondary/piyographql/schema/schema.graphql
 operations:
-  - internal/adapters/secondary/piyographql/operations/**/*.graphql
-generated: internal/adapters/secondary/piyographql/generated/generated.go
+  - internal/adapter/secondary/piyographql/operation/**/*.graphql
+generated: internal/adapter/secondary/piyographql/generated/generated.go
 bindings:
   DateTime:
     type: time.Time
