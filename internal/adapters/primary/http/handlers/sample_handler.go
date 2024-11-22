@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapters/primary/http/dto/request"
 	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/adapters/primary/http/dto/response"
@@ -32,84 +31,6 @@ func NewSampleHandler(
 		JSONWriter:    JSONWriter,
 		sampleUsecase: sampleUsecase,
 	}
-}
-
-// List godoc
-// @Summary List samples
-// @Description Get a list of samples with pagination
-// @Tags samples
-// @Accept  json
-// @Produce  json
-// @Param offset query int false "Offset for pagination" default(0) minimum(0)
-// @Param limit query int false "Limit for pagination" default(100) minimum(1) maximum(100)
-// @Security ApiKeyAuth
-// @Success 200 {object} response.ListSampleResponse
-// @Failure 400 {object} response.ErrorResponse
-// @Failure 500 {object} response.ErrorResponse
-// @Router /samples [get]
-func (h *SampleHandler) List(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	p := queryparameter.NewOffsetLimitParams(r)
-	if err := validator.Validate(p); err != nil {
-		h.logger.ErrorContext(ctx, "Invalid parameters", "error", err)
-		h.JSONWriter.WriteError(w, err)
-		return
-	}
-
-	// サンプルリストの取得
-	samples, err := h.sampleUsecase.List(ctx, p.Offset, p.Limit)
-	if err != nil {
-		h.logger.ErrorContext(ctx, "Failed to get sample list", "error", err)
-		h.JSONWriter.WriteError(w, err)
-		return
-	}
-
-	res := response.ToListSampleResponse(samples, p.Offset, p.Limit)
-
-	h.JSONWriter.Write(ctx, w, res)
-}
-
-// Create godoc
-// @Summary Sample create
-// @Description Create a new sample
-// @Tags samples
-// @Accept json
-// @Produce json
-// @Param request body request.SampleRequest true "Sample information"
-// @Security ApiKeyAuth
-// @Success 200 {object} response.SampleResponse
-// @Failure 400 {object} response.ErrorResponse
-// @Failure 401 {object} response.ErrorResponse
-// @Failure 500 {object} response.ErrorResponse
-// @Router /samples [post]
-func (h *SampleHandler) Create(w http.ResponseWriter, r *http.Request) {
-	// サンプル作成処理
-	ctx := r.Context()
-
-	var req request.SampleRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		h.logger.ErrorContext(ctx, "Failed to decode sample request", "error", err)
-		h.JSONWriter.WriteError(w, apperrors.NewBadRequestError("Invalid request body", err))
-		return
-	}
-
-	if validationErrors := validator.Validate(req); validationErrors != nil {
-		h.JSONWriter.WriteError(w, validationErrors)
-		return
-	}
-
-	res := response.SampleResponse{
-		ID:        "123",
-		StringVal: req.StringVal,
-		IntVal:    req.IntVal,
-		ArrayVal:  req.ArrayVal,
-		Email:     req.Email,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	}
-
-	h.JSONWriter.Write(ctx, w, res)
 }
 
 // Get godoc
@@ -149,7 +70,81 @@ func (h *SampleHandler) Get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res := response.ToSampleResponse(sample)
+	h.JSONWriter.Write(ctx, w, res)
+}
 
+// List godoc
+// @Summary List samples
+// @Description Get a list of samples with pagination
+// @Tags samples
+// @Accept  json
+// @Produce  json
+// @Param offset query int false "Offset for pagination" default(0) minimum(0)
+// @Param limit query int false "Limit for pagination" default(100) minimum(1) maximum(100)
+// @Security ApiKeyAuth
+// @Success 200 {object} response.ListSampleResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /samples [get]
+func (h *SampleHandler) List(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	p := queryparameter.NewOffsetLimitParams(r)
+	if err := validator.Validate(p); err != nil {
+		h.logger.ErrorContext(ctx, "Invalid parameters", "error", err)
+		h.JSONWriter.WriteError(w, err)
+		return
+	}
+
+	// サンプルリストの取得
+	samples, err := h.sampleUsecase.List(ctx, p.Offset, p.Limit)
+	if err != nil {
+		h.logger.ErrorContext(ctx, "Failed to get sample list", "error", err)
+		h.JSONWriter.WriteError(w, err)
+		return
+	}
+
+	res := response.ToListSampleResponse(samples, p.Offset, p.Limit)
+	h.JSONWriter.Write(ctx, w, res)
+}
+
+// Create godoc
+// @Summary Sample create
+// @Description Create a new sample
+// @Tags samples
+// @Accept json
+// @Produce json
+// @Param request body request.SampleRequest true "Sample information"
+// @Security ApiKeyAuth
+// @Success 200 {object} response.SampleResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 401 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /samples [post]
+func (h *SampleHandler) Create(w http.ResponseWriter, r *http.Request) {
+	// サンプル作成処理
+	ctx := r.Context()
+
+	var req request.SampleRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.logger.ErrorContext(ctx, "Failed to decode sample request", "error", err)
+		h.JSONWriter.WriteError(w, apperrors.NewBadRequestError("Invalid request body", err))
+		return
+	}
+
+	if validationErrors := validator.Validate(req); validationErrors != nil {
+		h.JSONWriter.WriteError(w, validationErrors)
+		return
+	}
+
+	sample, err := h.sampleUsecase.Create(ctx, req.ToSampleModel())
+	if err != nil {
+		h.logger.ErrorContext(ctx, "Failed to create sample", "error", err)
+		h.JSONWriter.WriteError(w, err)
+		return
+	}
+
+	res := response.ToSampleResponse(sample)
 	h.JSONWriter.Write(ctx, w, res)
 }
 

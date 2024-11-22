@@ -8,12 +8,15 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "convert-openapi": "api-spec-converter --from=swagger_2 --to=openapi_3 --syntax=json docs/swagger/swagger.json > docs/swagger/openapi3.json"
+    "convert-openapi": "api-spec-converter --from=swagger_2 --to=openapi_3 --syntax=json docs/swagger/swagger.json > docs/swagger/openapi3.json",
+    "fetch-schema": "node scripts/fetch-and-convert-schema.js",
+    "fetch-schema:clean": "rm -f internal/adapters/secondary/piyographql/schema/schema.{json,graphql}"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "api-spec-converter": "^2.12.0"
+    "api-spec-converter": "^2.12.0",
+    "graphql": "^16.8.1"
   }
 }

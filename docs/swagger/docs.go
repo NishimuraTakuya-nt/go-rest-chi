@@ -338,7 +338,7 @@ const docTemplate = `{
                 "string_val": {
                     "type": "string",
                     "maxLength": 50,
-                    "minLength": 2
+                    "minLength": 0
                 }
             }
         },

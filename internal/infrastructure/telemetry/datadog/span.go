@@ -91,7 +91,7 @@ func inferLayer(structName string) string {
 		return "service"
 	case strings.HasSuffix(structName, "Repository"):
 		return "repository"
-	case strings.HasSuffix(structName, "Client"):
+	case strings.HasSuffix(structName, "client"):
 		return "client"
 	default:
 		return "other"

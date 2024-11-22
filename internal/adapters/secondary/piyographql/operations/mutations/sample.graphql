@@ -1,0 +1,7 @@
+mutation CreateSampleMutation($input: CreateSampleInput!) {
+    createSample(input: $input) {
+        sample {
+            ...SampleFields
+        }
+    }
+}

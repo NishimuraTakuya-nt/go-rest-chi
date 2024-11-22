@@ -41,6 +41,12 @@ func (l *Loader) setDefaults() {
 	l.v.SetDefault("jwt_secret_key", "jwt-secret")
 	l.v.SetDefault("request_timeout", 180*time.Second)
 
+	l.v.SetDefault("piyo_graphql_endpoint", "http://localhost:8082/query")
+	l.v.SetDefault("piyo_graphql_timeout", 10*time.Second)
+	l.v.SetDefault("piyo_graphql_max_idle_conn", 100)
+	l.v.SetDefault("piyo_graphql_max_per_host", 100)
+	l.v.SetDefault("piyo_graphql_idle_conn_timeout", 90*time.Second)
+
 	l.v.SetDefault("dd_enabled", true)
 	l.v.SetDefault("dd_agent_host", "localhost")
 	l.v.SetDefault("dd_agent_trace_port", "8126") // case: datadog SDK
@@ -56,6 +62,14 @@ type AppConfig struct {
 	AllowedOrigins []string      `mapstructure:"allowed_origins" validate:"required"`
 	JWTSecretKey   string        `mapstructure:"jwt_secret_key" validate:"required"`
 	RequestTimeout time.Duration `mapstructure:"request_timeout" validate:"required"`
+
+	// Piyo GraphQL
+	PiyoGraphQLEndpoint        string        `mapstructure:"piyo_graphql_endpoint" validate:"required"`
+	PiyoGraphQLTimeout         time.Duration `mapstructure:"piyo_graphql_timeout" validate:"required"`
+	PiyoGraphQLMaxIdleConn     int           `mapstructure:"piyo_graphql_max_idle_conn" validate:"required"`
+	PiyoGraphQLMaxPerHost      int           `mapstructure:"piyo_graphql_max_per_host" validate:"required"`
+	PiyoGraphQLIdleConnTimeout time.Duration `mapstructure:"piyo_graphql_idle_conn_timeout" validate:"required"`
+
 	// DataDog Agent
 	DDEnabled          bool    `mapstructure:"dd_enabled" validate:"required"`
 	DDAgentHost        string  `mapstructure:"dd_agent_host" validate:"required"`

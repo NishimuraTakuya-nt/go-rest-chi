@@ -1,0 +1,11 @@
+query SampleQuery($id: ID!) {
+    sample(id: $id) {
+        ...SampleFields
+    }
+}
+
+query ListSampleQuery($offset: Int!, $limit: Int!) {
+    listSample(offset: $offset, limit: $limit) {
+        ...SampleFields
+    }
+}

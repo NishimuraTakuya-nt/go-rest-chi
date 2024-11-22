@@ -1,0 +1,9 @@
+fragment SampleFields on Sample {
+    id
+    stringVal
+    intVal
+    arrayVal
+    email
+    createdAt
+    updatedAt
+}

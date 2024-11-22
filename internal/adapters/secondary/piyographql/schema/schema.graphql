@@ -1,0 +1,124 @@
+"""
+The @defer directive may be specified on a fragment spread to imply de-prioritization, that causes the fragment to be omitted in the initial response, and delivered as a subsequent response afterward. A query with @defer directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred delivered in a subsequent response. @include and @skip take precedence over @defer.
+"""
+directive @defer(if: Boolean = true, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"""カスタムディレクティブの定義"""
+directive @validate(required: Boolean, minLength: Int, maxLength: Int, min: Int, max: Int, email: Boolean, pattern: String) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+
+"""サンプル作成の入力"""
+input CreateSampleInput {
+  """文字列値"""
+  stringVal: String!
+
+  """整数値"""
+  intVal: Int!
+
+  """文字列配列"""
+  arrayVal: [String!]!
+
+  """メールアドレス"""
+  email: String!
+}
+
+"""サンプル作成のレスポンス"""
+type CreateSamplePayload {
+  """作成されたサンプル"""
+  sample: Sample!
+}
+
+"""サンプル作成の入力"""
+input CreateSampleXInput {
+  """文字列値"""
+  stringVal: String!
+
+  """整数値"""
+  intVal: Int!
+
+  """文字列配列"""
+  arrayVal: [String!]!
+
+  """メールアドレス"""
+  email: String!
+}
+
+"""サンプル作成のレスポンス"""
+type CreateSampleXPayload {
+  """作成されたサンプル"""
+  sample: SampleX!
+}
+
+"""
+日時を表すカスタムスカラー型
+ISO 8601フォーマット (例: 2024-01-01T00:00:00Z) で表現されます
+"""
+scalar DateTime
+
+type Mutation {
+  _empty: String
+
+  """サンプルの作成"""
+  createSample(input: CreateSampleInput!): CreateSamplePayload!
+
+  """サンプルの作成"""
+  createSampleX(input: CreateSampleXInput!): CreateSampleXPayload!
+}
+
+type Query {
+  _empty: String
+
+  """IDによるサンプルの取得"""
+  sample(id: ID!): Sample
+
+  """サンプルのリスト取得"""
+  listSample(offset: Int!, limit: Int!): [Sample!]!
+
+  """IDによるサンプルの取得"""
+  sampleX(id: ID!): SampleX
+}
+
+type Sample {
+  """サンプルの一意識別子"""
+  id: ID!
+
+  """文字列値"""
+  stringVal: String!
+
+  """整数値"""
+  intVal: Int!
+
+  """文字列配列"""
+  arrayVal: [String!]!
+
+  """メールアドレス"""
+  email: String!
+
+  """作成日時"""
+  createdAt: DateTime!
+
+  """更新日時"""
+  updatedAt: DateTime!
+}
+
+type SampleX {
+  """サンプルの一意識別子"""
+  id: ID!
+
+  """文字列値"""
+  stringVal: String!
+
+  """整数値"""
+  intVal: Int!
+
+  """文字列配列"""
+  arrayVal: [String!]!
+
+  """メールアドレス"""
+  email: String!
+
+  """作成日時"""
+  createdAt: DateTime!
+
+  """更新日時"""
+  updatedAt: DateTime!
+}

@@ -41,10 +41,10 @@ type ListSampleResponse struct {
 }
 
 // ToListSampleResponse は複数のサンプルモデルを変換します
-func ToListSampleResponse(models []models.Sample, offset, limit *int) *ListSampleResponse {
+func ToListSampleResponse(models []*models.Sample, offset, limit *int) *ListSampleResponse {
 	samples := make([]SampleResponse, len(models))
 	for i, model := range models {
-		samples[i] = ToSampleResponse(&model)
+		samples[i] = ToSampleResponse(model)
 	}
 
 	return &ListSampleResponse{
