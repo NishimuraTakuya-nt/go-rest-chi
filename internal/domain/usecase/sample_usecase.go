@@ -2,7 +2,9 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/common/apperror"
 	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/common/logger"
 	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/domain/interface/external/piyographqls"
 	"github.com/NishimuraTakuya-nt/go-rest-chi/internal/domain/model"
@@ -27,6 +29,10 @@ func NewSampleUsecase(logger logger.Logger, client piyographqls.SampleClient) Sa
 }
 
 func (u *sampleUsecase) Get(ctx context.Context, ID string) (*model.Sample, error) {
+	if ID == "" {
+		return nil, apperror.NewBadRequestError("ID is required", fmt.Errorf("ID is required"))
+	}
+
 	s, err := u.graphqlClient.Sample(ctx, ID)
 	if err != nil {
 		return nil, err

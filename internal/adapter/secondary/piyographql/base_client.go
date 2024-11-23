@@ -94,10 +94,6 @@ func (c *baseClient) handleGraphQLError(ctx context.Context, operation string, e
 
 // processGraphQLErrors はGraphQLエラーを処理します
 func (c *baseClient) processGraphQLErrors(ctx context.Context, operation string, errors gqlerror.List) error {
-	if len(errors) == 0 {
-		return apperror.NewInternalError("empty GraphQL error list", nil)
-	}
-
 	c.logger.ErrorContext(ctx, "GraphQL errors occurred",
 		"operation", operation,
 		"errors", errors)
