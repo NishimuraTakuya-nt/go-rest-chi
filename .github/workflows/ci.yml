@@ -92,6 +92,13 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
+      - name: check---------------
+        run: |
+          echo "check---------------"
+          ls -la
+          ls -la coverage
+          cat coverage/coverage.txt
+          
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
@@ -99,12 +106,7 @@ jobs:
           file: ./coverage/coverage.txt
           fail_ci_if_error: true
 
-      - name: check---------------
-        run: |
-          echo "check---------------"
-          ls -la
-          ls -la coverage
-          cat coverage/coverage.txt
+
 
 #  build:
 #    name: Build
