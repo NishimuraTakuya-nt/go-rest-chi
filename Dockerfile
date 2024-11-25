@@ -25,7 +25,7 @@ RUN --mount=type=cache,id=go-mod,target=/go/pkg/mod \
 
 COPY . .
 RUN --mount=type=cache,id=go-test,target=/root/.cache/go-build \
-    make test
+    make test-ginkgo
 # change ginkgo command
 # id このままで良いのか？ modでいいのか？
 
