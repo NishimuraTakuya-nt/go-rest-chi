@@ -36,7 +36,7 @@ RUN --mount=type=cache,id=go-test,target=/root/.cache/go-build \
 # id このままで良いのか？ modでいいのか？
 RUN ls -la
 RUN ls -la coverage
-RUN ls -la cat coverage/coverage.txt
+RUN cat coverage/coverage.txt
 
 # ====== Build stage ======
 FROM base AS builder
