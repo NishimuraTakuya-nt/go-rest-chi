@@ -2,6 +2,7 @@
 
 ARG ALPINE_VERSION=3.20
 ARG GOLANG_VERSION=1.23.3
+ARG GINKGO_VERSION=2.22.0
 
 # ====== Base stage ======
 FROM golang:${GOLANG_VERSION}-alpine${ALPINE_VERSION} AS base
@@ -12,6 +13,8 @@ RUN apk --no-cache add \
     gcc \
     musl-dev \
     ca-certificates
+
+RUN go install github.com/onsi/ginkgo/v2/ginkgo@${GINKGO_VERSION}
 
 WORKDIR /go/src/github.com/NishimuraTakuya-nt/go-rest-chi
 
@@ -25,7 +28,7 @@ RUN --mount=type=cache,id=go-mod,target=/go/pkg/mod \
 
 COPY . .
 RUN --mount=type=cache,id=go-test,target=/root/.cache/go-build \
-    make test
+    make test-ginkgo
 # change ginkgo command
 # id このままで良いのか？ modでいいのか？
 
