@@ -4,7 +4,7 @@ ARG ALPINE_VERSION=3.20
 ARG GOLANG_VERSION=1.23.3
 
 # ====== Base stage ======
-FROM golang:${GOLANG_VERSION}-alpine${ALPINE_VERSION} as base
+FROM golang:${GOLANG_VERSION}-alpine${ALPINE_VERSION} AS base
 
 RUN apk --no-cache add \
     make \
@@ -17,7 +17,7 @@ WORKDIR /go/src/github.com/NishimuraTakuya-nt/go-rest-chi
 
 
 # ====== Test stage ======
-FROM base as test
+FROM base AS test
 
 COPY go.mod go.sum Makefile ./
 RUN --mount=type=cache,id=go-mod,target=/go/pkg/mod \
@@ -25,13 +25,13 @@ RUN --mount=type=cache,id=go-mod,target=/go/pkg/mod \
 
 COPY . .
 RUN --mount=type=cache,id=go-test,target=/root/.cache/go-build \
-    make test-ginkgo
+    make test
 # change ginkgo command
 # id このままで良いのか？ modでいいのか？
 
 
 # ====== Build stage ======
-FROM base as builder
+FROM base AS builder
 
 COPY go.mod go.sum Makefile ./
 RUN --mount=type=cache,id=go-rest-chi-pkg,target=/go/pkg \
@@ -46,7 +46,7 @@ RUN --mount=type=cache,id=go-rest-chi-pkg,target=/go/pkg \
 
 
 # ====== Release stage ======
-FROM alpine:${ALPINE_VERSION} as app
+FROM alpine:${ALPINE_VERSION} AS app
 
 RUN apk --no-cache add ca-certificates tzdata
 
