@@ -1,36 +1,57 @@
-# ビルドステージ
-FROM golang:1.23-alpine AS builder
+# syntax = docker/dockerfile:1
 
-# 作業ディレクトリの設定
-WORKDIR /app
+ARG ALPINE_VERSION=3.20
+ARG GOLANG_VERSION=1.23.3
 
-# 依存関係のコピーとダウンロード
-COPY go.mod go.sum ./
-RUN go mod download
+# ====== Base stage ======
+FROM golang:${GOLANG_VERSION}-alpine${ALPINE_VERSION} as base
 
-# ソースコードのコピー
+RUN apk --no-cache add \
+    make \
+    git \
+    gcc \
+    musl-dev \
+    ca-certificates
+
+WORKDIR /go/src/github.com/NishimuraTakuya-nt/go-rest-chi
+
+
+# ====== Test stage ======
+FROM base as test
+
+COPY go.mod go.sum Makefile ./
+RUN --mount=type=cache,id=go-mod,target=/go/pkg/mod \
+    make go-download
+
 COPY . .
+RUN --mount=type=cache,id=go-test,target=/root/.cache/go-build \
+    make test
+# change ginkgo command
+# id このままで良いのか？ modでいいのか？
 
-# アプリケーションのビルド
-RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/api
 
-# 実行ステージ
-FROM alpine:3.19
+# ====== Build stage ======
+FROM base as builder
 
-# セキュリティ強化: 非rootユーザーの作成
-RUN adduser -D appuser
+COPY go.mod go.sum Makefile ./
+RUN --mount=type=cache,id=go-rest-chi-pkg,target=/go/pkg \
+    --mount=type=secret,id=netrc,target=/root/.netrc \
+    make go-download
 
-# タイムゾーンの設定
-RUN apk --no-cache add tzdata
+COPY . .
+RUN --mount=type=cache,id=go-rest-chi-pkg,target=/go/pkg \
+    --mount=type=cache,id=go-rest-chi-go-build,target=/root/.cache/go-build \
+    --mount=type=secret,id=netrc,target=/root/.netrc \
+    make go-build
 
-# 作業ディレクトリの設定
+
+# ====== Release stage ======
+FROM alpine:${ALPINE_VERSION} as app
+
+RUN apk --no-cache add ca-certificates tzdata
+
 WORKDIR /app
 
-# ビルドステージから実行可能ファイルをコピー
-COPY --from=builder /app/main .
+COPY --from=builder /go/src/github.com/NishimuraTakuya-nt/go-rest-chi/bin/go-rest-chi ./bin/
 
-# 非rootユーザーに切り替え
-USER appuser
-
-# コンテナ起動時に実行されるコマンド
-CMD ["./main"]
+CMD ["/app/bin/go-rest-chi"]

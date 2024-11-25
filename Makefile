@@ -1,11 +1,20 @@
-.PHONY: lint lint-fix test test-ginkgo down build up clean wire fetch-graphql-schema clean-graphql-schema generate-graphql swagger generate-mocks  help
+.PHONY: lint lint-fix test test-ginkgo go-download go-build docker-down docker-build docker-up wire fetch-graphql-schema clean-graphql-schema generate-graphql swagger generate-mocks  help
 
+# 環境変数
 NAME := go-rest-chi
+REVISION   := $(shell git rev-parse --short HEAD)
 DC := docker compose
-LDFLAGS := -ldflags="-s -w -extldflags \"-static\""
+DOCKER_BUILDKIT := 1
+export DOCKER_BUILDKIT
 
-include .envrc
-export
+# ビルド設定
+LDFLAGS := -ldflags='-s -w -X "main.Revision=$(REVISION)" -extldflags "-static"'
+CGO_ENABLED ?= 0
+GOOS ?= linux
+GOARCH ?= amd64
+
+#include .envrc
+#export
 
 ## CI #########################################################################################
 lint: ## Run linter
@@ -20,19 +29,27 @@ test: ## Run tests
 test-ginkgo: ## Run tests
 	ginkgo -v -p ./...
 
+go-download:
+	go mod download
+	go mod verify
+
+go-build:
+	CGO_ENABLED=$(CGO_ENABLED) \
+	GOOS=$(GOOS) \
+	GOARCH=$(GOARCH) \
+	go build -tags netgo -installsuffix netgo $(LDFLAGS) \
+	-o bin/$(NAME) ./cmd/api
+
 
 ## Container ##################################################################################
-down: ## Stop container
+docker-down: ## Stop container
 	$(DC) down
 
-build: ## Build image
+docker-build: ## Build image
 	$(DC) build $(NAME)
 
-up: ## Run container
+docker-up: ## Run container
 	$(DC) up -d
-
-clean: ## Clean up
-	docker system prune -f
 
 
 ## Generate ###################################################################################
