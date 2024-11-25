@@ -31,7 +31,7 @@ RUN --mount=type=cache,id=go-mod,target=/go/pkg/mod \
 COPY . .
 RUN --mount=type=cache,id=go-test,target=/root/.cache/go-build \
     --mount=type=bind,target=/coverage \
-    mkdir -p /coverage && \
+    mkdir -p ./coverage && \
     make test-ginkgo-coverage
 # id このままで良いのか？ modでいいのか？
 

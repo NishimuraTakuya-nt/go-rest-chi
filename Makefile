@@ -29,10 +29,11 @@ test: ## Run tests
 test-ginkgo: ## Run tests
 	ginkgo -v -p ./...
 
-test-ginkgo-coverage: ## Run tests
+test-ginkgo-coverage: ## Run tests with coverage
 	ginkgo --race --cover --covermode=atomic \
-        --coverprofile=/coverage/coverage.txt \
-        -p -v ./...
+		--output-dir=./coverage \
+		--coverprofile=coverage.txt \
+		-p -v ./...
 
 go-download:
 	go mod download
