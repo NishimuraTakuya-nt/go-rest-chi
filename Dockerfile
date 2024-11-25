@@ -32,7 +32,7 @@ COPY . .
 RUN --mount=type=cache,id=go-test,target=/root/.cache/go-build \
     --mount=type=bind,target=/coverage \
     mkdir -p ./coverage && \
-    make test-ginkgo-coverage \
+    make test-ginkgo-coverage
 # id このままで良いのか？ modでいいのか？
 RUN ls -la
 RUN ls -la coverage
