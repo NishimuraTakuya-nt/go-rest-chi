@@ -22,6 +22,8 @@ WORKDIR /go/src/github.com/NishimuraTakuya-nt/go-rest-chi
 # ====== Test stage ======
 FROM base AS test
 
+ARG GINKGO_VERSION
+
 COPY go.mod go.sum Makefile ./
 RUN --mount=type=cache,id=go-mod,target=/go/pkg/mod \
     make go-download
