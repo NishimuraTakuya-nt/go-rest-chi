@@ -91,13 +91,14 @@ jobs:
           target: test
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-          outputs: type=local,dest=build-output
+#          outputs: type=local,dest=build-output
 
       - name: check---------------
         run: |
           echo "check---------------"
           ls -la
-          ls -la build-output
+          ls -la output
+#          ls -la build-output
 #          cat coverage/coverage.txt
 
       - name: Upload coverage to Codecov
