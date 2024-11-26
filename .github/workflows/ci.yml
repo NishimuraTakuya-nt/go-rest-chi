@@ -88,9 +88,23 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          target: test
+          target: coverage
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          outputs: type=local,dest=./coverage
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage/coverage.txt
+          fail_ci_if_error: true
+
 
 
 #  build:
