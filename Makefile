@@ -18,28 +18,30 @@ GOARCH ?= amd64
 
 ## CI #########################################################################################
 lint: ## Run linter
-	golangci-lint run
+	golangci-lint run -v
 
 lint-fix: ## Run linter with fix
-	golangci-lint run --fix
+	golangci-lint run -v --fix
 
 test: ## Run tests
 	go test -v ./...
 
 test-ginkgo: ## Run tests
-	ginkgo -v -p ./...
+	ginkgo -v -p --randomize-all ./...
 
 test-ginkgo-coverage: ## Run tests with coverage
 	ginkgo --race --cover --covermode=atomic \
 		--output-dir=./coverage \
 		--coverprofile=coverage.txt \
+		--randomize-all \
 		-p -v ./...
 
-go-download:
+go-download: ## Download dependencies
 	go mod download
 	go mod verify
+	go mod tidy
 
-go-build:
+go-build: ## Build binary
 	CGO_ENABLED=$(CGO_ENABLED) \
 	GOOS=$(GOOS) \
 	GOARCH=$(GOARCH) \

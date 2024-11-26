@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/Khan/genqlient/graphql"
 	"github.com/NishimuraTakuya-nt/go-rest-chi/tests/helper"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -167,8 +166,6 @@ var _ = Describe("BaseClient", func() {
 		It("設定されたGraphQLクライアントを返すこと", func() {
 			client := baseClient.GqlClient()
 			Expect(client).NotTo(BeNil())
-			_, ok := client.(graphql.Client)
-			Expect(ok).To(BeTrue())
 		})
 	})
 })

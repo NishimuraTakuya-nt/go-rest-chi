@@ -14,3 +14,9 @@ linters:
     - typecheck
     - goimports
     - revive
+
+linters-settings:
+  revive:
+    rules:
+      - name: dot-imports
+        disabled: true
