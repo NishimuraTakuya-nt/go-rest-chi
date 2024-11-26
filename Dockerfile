@@ -38,7 +38,7 @@ RUN touch aaa.txt
 RUN ls -la
 RUN ls -la coverage
 RUN cat coverage/coverage.txt
-RUN mkdir -p /output \
+RUN mkdir -p /output
 RUN cp coverage/coverage.txt /output/
 RUN ls -la /output
 
