@@ -97,7 +97,7 @@ jobs:
         run: |
           echo "check---------------"
           ls -la
-          ls -la output
+          ls -la coverage
 #          ls -la build-output
 #          cat coverage/coverage.txt
 
