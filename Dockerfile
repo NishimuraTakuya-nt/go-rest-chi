@@ -41,6 +41,7 @@ RUN cat coverage/coverage.txt
 RUN mkdir -p /output
 RUN cp coverage/coverage.txt /output/
 RUN ls -la /output
+RUN ls -la /
 
 # ====== Build stage ======
 FROM base AS builder
