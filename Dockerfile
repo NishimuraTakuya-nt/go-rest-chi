@@ -30,13 +30,17 @@ RUN --mount=type=cache,id=go-mod,target=/go/pkg/mod \
 
 COPY . .
 RUN --mount=type=cache,id=go-test,target=/root/.cache/go-build \
-    --mount=type=bind,target=/coverage \
+#    --mount=type=bind,target=/coverage \
     mkdir -p ./coverage && \
     make test-ginkgo-coverage
 # id このままで良いのか？ modでいいのか？
+RUN touch aaa.txt
 RUN ls -la
 RUN ls -la coverage
 RUN cat coverage/coverage.txt
+RUN mkdir -p /output \
+RUN cp coverage/coverage.txt /output/
+RUN ls -la /output
 
 # ====== Build stage ======
 FROM base AS builder
