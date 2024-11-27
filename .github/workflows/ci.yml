@@ -67,6 +67,80 @@ jobs:
 #          file: ./coverage.txt
 #          fail_ci_if_error: true
 
+#  lint-compose:
+#    name: Lint (Docker Compose)
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3
+#
+#      - name: Cache Docker layers
+#        uses: actions/cache@v4
+#        with:
+#          path: /tmp/.buildx-cache
+#          key: ${{ runner.os }}-buildx-lint-compose-${{ github.sha }}
+#          restore-keys: |
+#            ${{ runner.os }}-buildx-lint-compose-
+#
+#      - name: Run Lint
+#        run: docker compose run --rm lint
+#
+#  test-compose:
+#    name: Test (Docker Compose)
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3
+#
+#      - name: Cache Docker layers
+#        uses: actions/cache@v4
+#        with:
+#          path: /tmp/docker-cache
+#          key: ${{ runner.os }}-buildx-test-compose-${{ github.sha }}
+#          restore-keys: |
+#            ${{ runner.os }}-buildx-test-compose-
+#
+##  1    - name: Run Tests
+##        run: |
+##          mkdir -p ./coverage
+##          docker compose run --rm test
+#
+## 手動で docker-compose のサービスの build を actions/cache@v4 でキャッシュしてみたが、遅い
+#      # キャッシュされたイメージを読み込み
+#      - name: Load cached Docker images
+#        run: |
+#          if [ -f /tmp/docker-cache/images.tar ]; then
+#            docker load < /tmp/docker-cache/images.tar
+#          fi
+#
+#      # Docker Composeでビルド
+#      - name: Build with Docker Compose
+#        run: docker compose build test
+#
+#      # ビルドしたイメージをキャッシュ
+#      - name: Save Docker images to cache
+#        run: |
+#          mkdir -p /tmp/docker-cache
+#          docker save $(docker images -q) > /tmp/docker-cache/images.tar
+#
+#      # テストの実行
+#      - name: Run tests
+#        run: |
+#          mkdir -p ./coverage
+#          docker compose run --rm test
+
+  #      - name: Upload coverage to Codecov
+  #        uses: codecov/codecov-action@v4
+  #        with:
+  #          token: ${{ secrets.CODECOV_TOKEN }}
+  #          file: ./coverage/coverage.txt
+  #          fail_ci_if_error: true
+
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -135,6 +209,10 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage/coverage.txt
           fail_ci_if_error: true
+
+
+
+
 
 
 

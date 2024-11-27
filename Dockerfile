@@ -14,6 +14,7 @@ ARG GOLANGCI_LINT_VERSION
 RUN apk --no-cache add \
     ca-certificates \
     gcc \
+    git \
     make \
     musl-dev \
     tzdata
@@ -32,9 +33,21 @@ RUN --mount=type=cache,id=go-deps,target=/go/pkg/mod \
     go mod download
 
 COPY . .
-RUN --mount=type=cache,id=go-lint,target=/root/.cache/golangci-lint \
+RUN --mount=type=cache,id=go-deps,target=/go/pkg/mod \
+    --mount=type=cache,id=go-lint,target=/root/.cache/golangci-lint \
     --mount=type=cache,id=go-build,target=/root/.cache/go-build \
     make lint
+
+
+# ====== Lint execution stage ======
+FROM base AS lint-executor
+
+COPY go.mod go.sum ./
+RUN --mount=type=cache,id=go-deps,target=/go/pkg/mod \
+    go mod download
+
+COPY . .
+CMD ["make", "lint"]
 
 
 # ====== Test stage ======
@@ -45,13 +58,25 @@ RUN --mount=type=cache,id=go-deps,target=/go/pkg/mod \
     make go-download
 
 COPY . .
-RUN --mount=type=cache,id=go-build,target=/root/.cache/go-build \
+RUN --mount=type=cache,id=go-deps,target=/go/pkg/mod \
+    --mount=type=cache,id=go-build,target=/root/.cache/go-build \
     make test-ginkgo-coverage
 
 
 # ====== Coverage stage ======
 FROM scratch AS coverage
 COPY --from=test /go/src/github.com/NishimuraTakuya-nt/go-rest-chi/coverage/coverage.txt /coverage.txt
+
+
+# ====== Test stage for compose ======
+FROM base AS test-executor
+
+COPY go.mod go.sum Makefile ./
+RUN --mount=type=cache,id=go-deps,target=/go/pkg/mod \
+    make go-download
+
+COPY . .
+CMD ["make", "test-ginkgo-coverage"]
 
 
 # ====== Build stage ======
@@ -62,7 +87,8 @@ RUN --mount=type=cache,id=go-deps,target=/go/pkg/mod \
     make go-download
 
 COPY . .
-RUN --mount=type=cache,id=go-build,target=/root/.cache/go-build \
+RUN --mount=type=cache,id=go-deps,target=/go/pkg/mod \
+    --mount=type=cache,id=go-build,target=/root/.cache/go-build \
     make go-build
 
 

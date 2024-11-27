@@ -25,7 +25,8 @@ services:
       - "8126:8126"
       - "8125:8125/udp"
     environment:
-      - DD_API_KEY=${DD_API_KEY}
+#      - DD_API_KEY=${DD_API_KEY}
+      - DD_API_KEY=dummy
       - DD_SITE=ap1.datadoghq.com
       - DD_APM_ENABLED=true
       - DD_APM_NON_LOCAL_TRAFFIC=true
@@ -40,6 +41,25 @@ services:
       - /proc/:/host/proc/:ro
       - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
       - /tmp/datadog-agent-run:/opt/datadog-agent/run:rw
+
+  test:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test-executor
+    volumes:
+      - go-modules:/go/pkg/mod
+      - ./coverage:/go/src/github.com/NishimuraTakuya-nt/go-rest-chi/coverage
+
+  lint:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: lint-executor
+    volumes:
+      - go-modules:/go/pkg/mod
 
 volumes:
   go-modules:
