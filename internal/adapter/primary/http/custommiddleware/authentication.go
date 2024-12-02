@@ -16,8 +16,8 @@ var UserKey = struct{}{}
 var excludedPaths = []string{
 	"/api/v1/auth/login",
 	"/api/v1/healthcheck",
-	"/swagger/",
-	"/docs/swagger/",
+	"/openapi/",
+	"/docs/openapi/",
 }
 
 type Authentication struct {

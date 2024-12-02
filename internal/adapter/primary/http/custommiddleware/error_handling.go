@@ -116,6 +116,7 @@ func (h *ErrorHandling) handleError(ctx context.Context, rw *presenter.WrapRespo
 		}
 	}
 
+	rw.Header().Set("Content-Type", "application/json")
 	rw.WriteHeader(statusCode)
 	h.JSONWriter.Write(ctx, rw, res)
 }

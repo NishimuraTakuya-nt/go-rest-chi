@@ -21,7 +21,7 @@ import (
 )
 
 import (
-	_ "github.com/NishimuraTakuya-nt/go-rest-chi/docs/swagger"
+	_ "github.com/NishimuraTakuya-nt/go-rest-chi/docs/openapi"
 )
 
 // Injectors from wire.go:

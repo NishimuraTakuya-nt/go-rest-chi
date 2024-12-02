@@ -29,7 +29,6 @@ func (rw *WrapResponseWriter) Write(b []byte) (int, error) {
 
 // WriteHeader インターフェースのオーバーライド。status code を更新する時のみ呼び出される
 func (rw *WrapResponseWriter) WriteHeader(statusCode int) {
-	rw.Header().Set("Content-Type", "application/json")
 	rw.StatusCode = statusCode
 	rw.ResponseWriter.WriteHeader(statusCode)
 }

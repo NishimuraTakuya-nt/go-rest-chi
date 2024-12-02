@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "convert-openapi": "api-spec-converter --from=swagger_2 --to=openapi_3 --syntax=json docs/swagger/swagger.json > docs/swagger/openapi3.json",
+    "convert-openapi": "api-spec-converter --from=swagger_2 --to=openapi_3 --syntax=json docs/openapi/swagger.json > docs/openapi/openapi3.json",
     "fetch-schema": "node script/fetch-and-convert-schema.js",
     "fetch-schema:clean": "rm -f internal/adapter/secondary/piyographql/schema/schema.{json,graphql}"
   },

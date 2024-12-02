@@ -74,7 +74,7 @@ generate-graphql: ## Generate graphql
 	go run github.com/Khan/genqlient
 
 swagger: ## Generate swagger
-	swag init -g cmd/api/main.go -o docs/swagger
+	go run github.com/swaggo/swag/cmd/swag init -g cmd/api/main.go -o docs/openapi
 	npm run convert-openapi
 
 generate-mock: ## Generate mock

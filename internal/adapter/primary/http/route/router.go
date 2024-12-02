@@ -86,11 +86,12 @@ func (ro *Router) setupSwagger(r *chi.Mux) {
 	if ro.cfg.Env == "prd" {
 		return
 	}
+
 	// Swagger 2.0
-	r.Get("/swagger/2.0/*", httpSwagger.Handler(httpSwagger.URL("/docs/swagger/swagger.json")))
+	r.Get("/swagger/2.0/*", httpSwagger.Handler(httpSwagger.URL("/docs/openapi/swagger.json")))
 	// OAS 3.0
-	r.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("/docs/swagger/openapi3.json")))
-	r.Handle("/docs/swagger/*", http.StripPrefix("/docs/swagger/", http.FileServer(http.Dir("./docs/swagger"))))
+	r.Get("/openapi/*", httpSwagger.Handler(httpSwagger.URL("/docs/openapi/openapi3.json")))
+	r.Handle("/docs/openapi/*", http.StripPrefix("/docs/openapi/", http.FileServer(http.Dir("./docs/openapi"))))
 }
 
 func (ro *Router) setupAPIRoutes(r *chi.Mux) {
